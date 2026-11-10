@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
 
-from pico2d import draw_line, draw_rectangle, load_font, load_image
+from pico2d import (draw_line, draw_rectangle, get_canvas_height,
+                    get_canvas_width, load_font, load_image)
 from sdl2 import SDL_KEYDOWN, SDLK_0, SDLK_1, SDLK_2
 
 
@@ -26,6 +27,12 @@ class ItemMode:
             return True
         return False
 
+    def position(self):
+        # Keep the whole panel visible when the character reaches a screen edge.
+        x = max(158, min(get_canvas_width() - 158, self.boy.x))
+        y = max(84, min(get_canvas_height() - 84, self.boy.y + 140))
+        return x, y
+
     def draw(self):
         if not self.is_open:
             return
@@ -39,7 +46,7 @@ class ItemMode:
             if font_path is None:
                 raise FileNotFoundError('Install Consolas, DejaVu Sans Mono or Menlo')
             self.font = load_font(str(font_path), 14)
-        x, y = self.boy.x, self.boy.y + 140
+        x, y = self.position()
         draw_rectangle(x - 150, y - 76, x + 150, y + 76,
                        23, 31, 45, filled=True)
         accent = (80, 225, 184)

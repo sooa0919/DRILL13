@@ -57,10 +57,14 @@ def resume():
     if boy.state == 'RUN':
         boy.stop_run()
 
-def render():
-    clear_canvas()
+def render_world():
     game_world.render()
     items.draw()
+
+
+def render():
+    clear_canvas()
+    render_world()
     update_canvas()
 
 

@@ -1,6 +1,6 @@
 from pico2d import *
 import game_framework
-import game_world
+import play_mode
 
 
 def init():
@@ -28,7 +28,7 @@ def update():
 
 def render():
     clear_canvas()
-    game_world.render()
+    play_mode.render_world()
     x, y = get_canvas_width() // 2, get_canvas_height() // 2
     draw_rectangle(x - 64, y - 64, x + 64, y + 64,
                    30, 30, 30, filled=True)
