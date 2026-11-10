@@ -65,7 +65,8 @@ class ItemMode:
             if selected:
                 draw_rectangle(cx - 40, y - 36, cx + 40, y - 33,
                                *accent, filled=True)
-            self.font.draw(cx - 33, y + 29, f'{index} {names[index]}', border)
+            text_color = accent if selected else (220, 230, 245)
+            self.font.draw(cx - 33, y + 29, f'{index} {names[index]}', text_color)
             label = 'NO BALL' if size is None else f'{size}x{size}'
             self.font.draw(cx - 29, y - 25, label, (220, 230, 245))
             if size is None:

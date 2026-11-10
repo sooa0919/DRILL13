@@ -73,4 +73,3 @@ def finish():
     game_world.clear()
     boy = None
     items = None
-items = None
