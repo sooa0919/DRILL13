@@ -5,8 +5,10 @@ import title_mode
 import pause_mode
 from boy import Boy
 from grass import Grass
+from item_mode import ItemMode
 
 boy = None
+items = None
 paused_at = 0.0
 
 def handle_events():
@@ -22,14 +24,18 @@ def handle_events():
             if not getattr(event, 'repeat', False):
                 game_framework.push_mode(pause_mode)
                 return
-        else:
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_e:
+            if not getattr(event, 'repeat', False):
+                items.toggle()
+        elif not items.handle_event(event):
             boy.handle_event(event)
 
 
 
 def init():
-    global boy
+    global boy, items
     boy = Boy()
+    items = ItemMode(boy)
     game_world.add_object(boy)
 
     grass = Grass()
@@ -58,6 +64,8 @@ def render():
 
 
 def finish():
-    global boy
+    global boy, items
     game_world.clear()
     boy = None
+    items = None
+items = None
