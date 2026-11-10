@@ -1,4 +1,7 @@
-from pico2d import draw_line, draw_rectangle, load_image
+import os
+from pathlib import Path
+
+from pico2d import draw_line, draw_rectangle, load_font, load_image
 from sdl2 import SDL_KEYDOWN, SDLK_0, SDLK_1, SDLK_2
 
 
@@ -11,6 +14,7 @@ class ItemMode:
         self.boy = boy
         self.is_open = False
         self.icons = {}
+        self.font = None
 
     def toggle(self):
         self.is_open = not self.is_open
@@ -25,13 +29,38 @@ class ItemMode:
     def draw(self):
         if not self.is_open:
             return
+        if self.font is None:
+            candidates = [
+                Path(os.environ.get('WINDIR', 'C:/Windows')) / 'Fonts/consola.ttf',
+                Path('/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'),
+                Path('/System/Library/Fonts/Menlo.ttc'),
+            ]
+            font_path = next((p for p in candidates if p.is_file()), None)
+            if font_path is None:
+                raise FileNotFoundError('Install Consolas, DejaVu Sans Mono or Menlo')
+            self.font = load_font(str(font_path), 14)
         x, y = self.boy.x, self.boy.y + 140
         draw_rectangle(x - 150, y - 76, x + 150, y + 76,
                        23, 31, 45, filled=True)
+        accent = (80, 225, 184)
+        self.font.draw(x - 136, y + 58, 'ITEMS', accent)
+        self.font.draw(x + 66, y + 58, 'E: CLOSE', (210, 220, 235))
+        names = ('CLEAR', 'SMALL', 'LARGE')
+        selected_name = names[(None, 21, 41).index(self.boy.ball_size)]
+        self.font.draw(x - 136, y - 58, f'{selected_name} | SPACE: fire', accent)
         for index, size in enumerate((None, 21, 41)):
             cx = x + (index - 1) * 94
             draw_rectangle(cx - 42, y - 38, cx + 42, y + 42,
                            43, 54, 72, filled=True)
+            selected = size == self.boy.ball_size
+            border = accent if selected else (95, 112, 135)
+            draw_rectangle(cx - 42, y - 38, cx + 42, y + 42, *border)
+            if selected:
+                draw_rectangle(cx - 40, y - 36, cx + 40, y - 33,
+                               *accent, filled=True)
+            self.font.draw(cx - 33, y + 29, f'{index} {names[index]}', border)
+            label = 'NO BALL' if size is None else f'{size}x{size}'
+            self.font.draw(cx - 29, y - 25, label, (220, 230, 245))
             if size is None:
                 draw_line(cx - 12, y - 12, cx + 12, y + 12, 190, 200, 215)
                 draw_line(cx - 12, y + 12, cx + 12, y - 12, 190, 200, 215)
