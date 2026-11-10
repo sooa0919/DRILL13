@@ -60,6 +60,7 @@ def resume():
 def render():
     clear_canvas()
     game_world.render()
+    items.draw()
     update_canvas()
 
 

@@ -1,3 +1,4 @@
+from pico2d import draw_rectangle
 from sdl2 import SDL_KEYDOWN, SDLK_0, SDLK_1, SDLK_2
 
 
@@ -19,3 +20,10 @@ class ItemMode:
             self.boy.select_ball(self.CHOICES[event.key])
             return True
         return False
+
+    def draw(self):
+        if not self.is_open:
+            return
+        x, y = self.boy.x, self.boy.y + 140
+        draw_rectangle(x - 150, y - 76, x + 150, y + 76,
+                       23, 31, 45, filled=True)
