@@ -18,6 +18,7 @@ class Boy:
         self.dir = 0
         self.face_dir = 1
         self.pressed_keys = set()
+        self.ball_size = 21
 
         self.machine = Machine(
             model=self,
@@ -46,8 +47,15 @@ class Boy:
     def on_enter_RUN(self):
         self.frame = 0
 
+    def select_ball(self, size):
+        if size not in (None, 21, 41):
+            raise ValueError('Unknown ball item')
+        self.ball_size = size
+
     def fire_ball(self):
-        ball = Ball(self.x, self.y, self.face_dir * 10)
+        if self.ball_size is None:
+            return
+        ball = Ball(self.x, self.y, self.face_dir * 10, self.ball_size)
         game_world.add_object(ball)
 
     def handle_event(self, event):
